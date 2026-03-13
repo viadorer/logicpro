@@ -16,11 +16,13 @@ export default function Detail() {
 
   useEffect(() => {
     setLoading(true);
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "instant" });
     Promise.all([fetchDetail(id), fetchSimilar(id)])
       .then(([detail, sim]) => {
         setListing(detail);
         setSimilar(sim.listings);
+        // Scroll znovu po vykreslení obsahu
+        requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "instant" }));
       })
       .catch(() => {})
       .finally(() => setLoading(false));
