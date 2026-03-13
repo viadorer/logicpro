@@ -21,7 +21,7 @@ export default function Header() {
   const displayName =
     profile?.full_name ||
     user?.user_metadata?.full_name ||
-    "Ucet";
+    "Účet";
 
   async function handleSignOut() {
     await signOut();
@@ -37,7 +37,7 @@ export default function Header() {
           <span className="logo__dot" />
         </Link>
         <nav className={`nav${navOpen ? " nav--open" : ""}`}>
-          <Link to="/" className="nav__link">Sluzby</Link>
+          <Link to="/" className="nav__link">Služby</Link>
           <Link to="/nabidky" className="nav__link">Nemovitosti</Link>
           <Link to="/" className="nav__link">Z trhu</Link>
           <Link to="/" className="nav__link">Reference</Link>
@@ -56,12 +56,12 @@ export default function Header() {
                 onClick={handleSignOut}
                 style={{ fontSize: 12, padding: "6px 12px" }}
               >
-                Odhlasit se
+                Odhlásit se
               </button>
             </>
           ) : (
             <Link to="/prihlaseni" className="btn btn--sm btn--fill">
-              Prihlaseni
+              Přihlášení
             </Link>
           )}
           <button className="burger" onClick={() => setNavOpen(!navOpen)}>

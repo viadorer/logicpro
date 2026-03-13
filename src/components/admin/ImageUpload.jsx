@@ -85,7 +85,7 @@ const ImageUpload = forwardRef(function ImageUpload({ listingId }, ref) {
   }
 
   async function deleteExisting(img) {
-    if (!window.confirm("Smazat tento obrazek?")) return;
+    if (!window.confirm("Smazat tento obrázek?")) return;
     // Remove from storage
     const urlParts = img.url.split("/listing-images/");
     if (urlParts[1]) {
@@ -121,7 +121,7 @@ const ImageUpload = forwardRef(function ImageUpload({ listingId }, ref) {
         onDragLeave={handleDragLeave}
         onClick={() => document.getElementById("img-file-input").click()}
       >
-        Pretahnete obrazky sem nebo kliknete pro vyber souboru
+        Přetáhněte obrázky sem nebo klikněte pro výběr souborů
         <input
           id="img-file-input"
           type="file"
@@ -147,7 +147,7 @@ const ImageUpload = forwardRef(function ImageUpload({ listingId }, ref) {
                     className="img-upload__thumb-btn"
                     onClick={() => setMain(img)}
                   >
-                    Hlavni
+                    Hlavní
                   </button>
                 )}
                 <button

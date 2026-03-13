@@ -36,9 +36,9 @@ export default function AdminListings() {
 
   return (
     <div>
-      <h1 className="admin__page-title">Sprava nemovitosti</h1>
+      <h1 className="admin__page-title">Správa nemovitostí</h1>
       <p className="admin__page-subtitle">
-        Celkem: {listings.length} nemovitosti
+        Celkem: {listings.length} nemovitostí
       </p>
 
       {loading ? (
@@ -51,8 +51,8 @@ export default function AdminListings() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nazev</th>
-                <th>Mesto</th>
+                <th>Název</th>
+                <th>Město</th>
                 <th>Typ</th>
                 <th>Cena</th>
                 <th>Stav</th>
@@ -71,7 +71,7 @@ export default function AdminListings() {
                   </td>
                   <td>
                     <span className="admin__badge admin__badge--active">
-                      Aktivni
+                      Aktivní
                     </span>
                   </td>
                   <td>
@@ -96,7 +96,7 @@ export default function AdminListings() {
               {listings.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: 40 }}>
-                    Zadne nemovitosti
+                    Žádné nemovitosti
                   </td>
                 </tr>
               )}

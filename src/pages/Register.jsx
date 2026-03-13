@@ -17,7 +17,7 @@ export default function Register() {
     setError("");
 
     if (password !== passwordConfirm) {
-      setError("Hesla se neshoduji.");
+      setError("Hesla se neshodují.");
       return;
     }
 
@@ -26,7 +26,7 @@ export default function Register() {
       await signUp(email, password, fullName);
       setSuccess(true);
     } catch (err) {
-      setError(err.message || "Registrace se nezdarila.");
+      setError(err.message || "Registrace se nezdařila.");
     } finally {
       setSubmitting(false);
     }
@@ -36,10 +36,10 @@ export default function Register() {
     <section className="auth">
       <div className="auth__card glass">
         <h1 className="auth__title">Registrace</h1>
-        <p className="auth__subtitle">Vytvorte si novy ucet</p>
+        <p className="auth__subtitle">Vytvořte si nový účet</p>
         {success ? (
           <div className="auth__success">
-            Registrace uspesna. Zkontrolujte svuj email.
+            Registrace úspěšná. Zkontrolujte svůj email.
           </div>
         ) : (
           <form className="auth__form" onSubmit={handleSubmit}>
@@ -47,7 +47,7 @@ export default function Register() {
             <input
               className="auth__input"
               type="text"
-              placeholder="Cele jmeno"
+              placeholder="Celé jméno"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -71,7 +71,7 @@ export default function Register() {
             <input
               className="auth__input"
               type="password"
-              placeholder="Potvrzeni hesla"
+              placeholder="Potvrzení hesla"
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
               required
@@ -86,7 +86,7 @@ export default function Register() {
           </form>
         )}
         <p className="auth__link">
-          Mate ucet? <Link to="/prihlaseni">Prihlaste se</Link>
+          Máte účet? <Link to="/prihlaseni">Přihlaste se</Link>
         </p>
       </div>
     </section>

@@ -12,7 +12,7 @@ export default function Card({ listing: l }) {
       <div className="card__img">
         <img src={l.main_image} alt={l.title} loading="lazy" />
         <span className={`card__badge ${isRent ? "card__badge--rent" : "card__badge--sale"}`}>
-          {isRent ? "Pronajem" : "Prodej"}
+          {isRent ? "Pronájem" : "Prodej"}
         </span>
         <FavoriteButton listingId={l.id} />
       </div>

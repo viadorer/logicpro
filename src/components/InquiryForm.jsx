@@ -11,7 +11,7 @@ export default function InquiryForm({ listing }) {
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState(
-    listing ? `Mam zajem o: ${listing.title}` : ""
+    listing ? `Mám zájem o: ${listing.title}` : ""
   );
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -35,7 +35,7 @@ export default function InquiryForm({ listing }) {
       if (insertError) throw insertError;
       setSuccess(true);
     } catch (err) {
-      setError(err.message || "Odeslani se nezdarilo. Zkuste to prosim znovu.");
+      setError(err.message || "Odeslání se nezdařilo. Zkuste to prosím znovu.");
     } finally {
       setSubmitting(false);
     }
@@ -44,24 +44,24 @@ export default function InquiryForm({ listing }) {
   if (success) {
     return (
       <div className="inquiry__success">
-        <strong>Dekujeme za vas zajem.</strong>
+        <strong>Děkujeme za váš zájem.</strong>
         <br />
-        Budeme vas kontaktovat.
+        Budeme vás kontaktovat.
       </div>
     );
   }
 
   return (
     <>
-      <h3>Mate zajem?</h3>
+      <h3>Máte zájem?</h3>
       <p style={{ fontSize: 14, color: "var(--ink3)", marginBottom: 20 }}>
-        Vyplnte formular a ozveme se vam.
+        Vyplňte formulář a ozveme se vám.
       </p>
       <form className="inquiry__form" onSubmit={handleSubmit}>
         {error && <div className="inquiry__error">{error}</div>}
         <input
           type="text"
-          placeholder="Vase jmeno"
+          placeholder="Vaše jméno"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -75,12 +75,12 @@ export default function InquiryForm({ listing }) {
         />
         <input
           type="tel"
-          placeholder="Telefon (nepovinne)"
+          placeholder="Telefon (nepovinné)"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
         <textarea
-          placeholder="Zprava"
+          placeholder="Zpráva"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
@@ -91,7 +91,7 @@ export default function InquiryForm({ listing }) {
           className="btn btn--fill btn--full"
           disabled={submitting}
         >
-          {submitting ? "Odesilam..." : "Odeslat poptavku"}
+          {submitting ? "Odesílám..." : "Odeslat poptávku"}
         </button>
       </form>
     </>

@@ -107,20 +107,20 @@ export default function SearchBar() {
                       : "search-bar__result-badge--sale"
                   }`}
                 >
-                  {isRent ? "Pronajem" : "Prodej"}
+                  {isRent ? "Pronájem" : "Prodej"}
                 </span>
               </div>
             );
           })}
           <div className="search-bar__hint">
-            Stisknete Enter pro zobrazeni vsech vysledku
+            Stiskněte Enter pro zobrazení všech výsledků
           </div>
         </div>
       )}
 
       {open && query.length >= 2 && results.length === 0 && (
         <div className="search-bar__dropdown">
-          <div className="search-bar__hint">Zadne vysledky</div>
+          <div className="search-bar__hint">Žádné výsledky</div>
         </div>
       )}
     </div>

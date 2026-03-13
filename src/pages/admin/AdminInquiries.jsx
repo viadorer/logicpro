@@ -21,7 +21,7 @@ export default function AdminInquiries() {
   }, []);
 
   async function handleDelete(id) {
-    if (!window.confirm("Opravdu chcete smazat tuto poptavku?")) return;
+    if (!window.confirm("Opravdu chcete smazat tuto poptávku?")) return;
     const { error } = await supabase.from("inquiries").delete().eq("id", id);
     if (!error) {
       setInquiries((prev) => prev.filter((i) => i.id !== id));
@@ -43,9 +43,9 @@ export default function AdminInquiries() {
 
   return (
     <div>
-      <h1 className="admin__page-title">Poptavky</h1>
+      <h1 className="admin__page-title">Poptávky</h1>
       <p className="admin__page-subtitle">
-        Celkem: {inquiries.length} poptavek
+        Celkem: {inquiries.length} poptávek
       </p>
 
       {loading ? (
@@ -59,7 +59,7 @@ export default function AdminInquiries() {
               <tr>
                 <th>ID</th>
                 <th>Nemovitost</th>
-                <th>Jmeno</th>
+                <th>Jméno</th>
                 <th>Email</th>
                 <th>Telefon</th>
                 <th>Datum</th>
@@ -97,7 +97,7 @@ export default function AdminInquiries() {
                   {expandedId === inq.id && (
                     <tr>
                       <td colSpan={7} className="admin__inquiry-msg">
-                        {inq.message || "Zadna zprava."}
+                        {inq.message || "Žádná zpráva."}
                       </td>
                     </tr>
                   )}
@@ -106,7 +106,7 @@ export default function AdminInquiries() {
               {inquiries.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: 40 }}>
-                    Zadne poptavky
+                    Žádné poptávky
                   </td>
                 </tr>
               )}

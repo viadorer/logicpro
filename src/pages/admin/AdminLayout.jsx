@@ -36,7 +36,7 @@ export default function AdminLayout() {
               "admin__nav-item" + (isActive ? " active" : "")
             }
           >
-            Novy inzerat
+            Nový inzerát
           </NavLink>
           <NavLink
             to="/admin/poptavky"
@@ -44,11 +44,11 @@ export default function AdminLayout() {
               "admin__nav-item" + (isActive ? " active" : "")
             }
           >
-            Poptavky
+            Poptávky
           </NavLink>
           <div className="admin__nav-divider" />
           <a href="/" className="admin__nav-item">
-            Zpet na web
+            Zpět na web
           </a>
         </nav>
         <div className="admin__nav-bottom">
@@ -57,7 +57,7 @@ export default function AdminLayout() {
             className="admin__nav-item"
             onClick={handleSignOut}
           >
-            Odhlasit se
+            Odhlásit se
           </button>
         </div>
       </aside>

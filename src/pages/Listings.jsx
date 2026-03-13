@@ -48,7 +48,7 @@ export default function Listings() {
   const hasActiveFilters = Object.values(filters).some((v) => v);
 
   async function handleSaveSearch() {
-    const name = window.prompt("Nazev hledani:");
+    const name = window.prompt("Název hledání:");
     if (!name) return;
     await supabase.from("saved_searches").insert({
       user_id: user.id,
@@ -90,7 +90,7 @@ export default function Listings() {
                     className="btn btn--outline btn--sm"
                     onClick={handleSaveSearch}
                   >
-                    Ulozit hledani
+                    Uložit hledání
                   </button>
                 )}
                 <button

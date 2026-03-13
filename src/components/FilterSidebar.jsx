@@ -83,9 +83,9 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
       </div>
 
       <div className="filter-group">
-        <span className="filter-group__label">Trida budovy</span>
+        <span className="filter-group__label">Třída budovy</span>
         <div className="filter-group__chips">
-          <Chip active={!filters.building_class} onClick={() => setFilter("building_class", null)}>Vse</Chip>
+          <Chip active={!filters.building_class} onClick={() => setFilter("building_class", null)}>Vše</Chip>
           <Chip active={filters.building_class === "1"} onClick={() => setFilter("building_class", "1")}>A</Chip>
           <Chip active={filters.building_class === "2"} onClick={() => setFilter("building_class", "2")}>B</Chip>
           <Chip active={filters.building_class === "3"} onClick={() => setFilter("building_class", "3")}>C</Chip>
@@ -93,7 +93,7 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
       </div>
 
       <div className="filter-group">
-        <span className="filter-group__label">Svetla vyska (m)</span>
+        <span className="filter-group__label">Světlá výška (m)</span>
         <div className="filter-range">
           <input className="filter-input" type="number" placeholder="Od" step="0.5" defaultValue={filters.ceiling_height_min || ""} onChange={(e) => handleRange("ceiling_height_min", e.target.value)} />
           <span>&mdash;</span>
@@ -102,9 +102,9 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
       </div>
 
       <div className="filter-group">
-        <span className="filter-group__label">Unosnost podlahy</span>
+        <span className="filter-group__label">Únosnost podlahy</span>
         <div className="filter-group__chips">
-          <Chip active={!filters.floor_load} onClick={() => setFilter("floor_load", null)}>Vse</Chip>
+          <Chip active={!filters.floor_load} onClick={() => setFilter("floor_load", null)}>Vše</Chip>
           <Chip active={filters.floor_load === "2"} onClick={() => setFilter("floor_load", "2")}>3+ t/m2</Chip>
           <Chip active={filters.floor_load === "3"} onClick={() => setFilter("floor_load", "3")}>5+ t/m2</Chip>
           <Chip active={filters.floor_load === "5"} onClick={() => setFilter("floor_load", "5")}>10+ t/m2</Chip>

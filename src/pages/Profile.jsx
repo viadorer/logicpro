@@ -55,7 +55,7 @@ export default function Profile() {
   const displayName =
     profile?.full_name ||
     user?.user_metadata?.full_name ||
-    "Uzivatel";
+    "Uživatel";
   const initials = displayName
     .split(" ")
     .map((w) => w[0])
@@ -75,14 +75,14 @@ export default function Profile() {
         </div>
 
         <div className="profile__section">
-          <h2>Oblibene nemovitosti</h2>
+          <h2>Oblíbené nemovitosti</h2>
           {loadingFavs ? (
             <div className="loader">
               <div className="loader__spinner" />
             </div>
           ) : favorites.length === 0 ? (
             <div className="profile__empty">
-              Zatim nemáte zadne oblibene nemovitosti.
+              Zatím nemáte žádné oblíbené nemovitosti.
             </div>
           ) : (
             <div className="listings__grid">
@@ -94,14 +94,14 @@ export default function Profile() {
         </div>
 
         <div className="profile__section">
-          <h2>Ulozena hledani</h2>
+          <h2>Uložená hledání</h2>
           {loadingSearches ? (
             <div className="loader">
               <div className="loader__spinner" />
             </div>
           ) : savedSearches.length === 0 ? (
             <div className="profile__empty">
-              Zatim nemáte zadna ulozena hledani.
+              Zatím nemáte žádná uložená hledání.
             </div>
           ) : (
             <div className="profile__searches">
@@ -118,7 +118,7 @@ export default function Profile() {
                       className="btn btn--outline btn--sm"
                       onClick={() => applySearch(s)}
                     >
-                      Pouzit
+                      Použít
                     </button>
                     <button
                       className="saved-search__del"
@@ -135,7 +135,7 @@ export default function Profile() {
         </div>
 
         <button className="btn btn--outline" onClick={handleSignOut}>
-          Odhlasit se
+          Odhlásit se
         </button>
       </div>
     </section>

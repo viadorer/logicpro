@@ -18,7 +18,7 @@ export default function Login() {
       await signIn(email, password);
       navigate("/");
     } catch (err) {
-      setError(err.message || "Prihlaseni se nezdarilo.");
+      setError(err.message || "Přihlášení se nezdařilo.");
     } finally {
       setSubmitting(false);
     }
@@ -27,8 +27,8 @@ export default function Login() {
   return (
     <section className="auth">
       <div className="auth__card glass">
-        <h1 className="auth__title">Prihlaseni</h1>
-        <p className="auth__subtitle">Zadejte sve prihlasovaci udaje</p>
+        <h1 className="auth__title">Přihlášení</h1>
+        <p className="auth__subtitle">Zadejte své přihlašovací údaje</p>
         <form className="auth__form" onSubmit={handleSubmit}>
           {error && <div className="auth__error">{error}</div>}
           <input
@@ -52,11 +52,11 @@ export default function Login() {
             className="btn btn--fill btn--full"
             disabled={submitting}
           >
-            {submitting ? "Prihlasuji..." : "Prihlasit se"}
+            {submitting ? "Přihlašuji..." : "Přihlásit se"}
           </button>
         </form>
         <p className="auth__link">
-          Nemate ucet? <Link to="/registrace">Zaregistrujte se</Link>
+          Nemáte účet? <Link to="/registrace">Zaregistrujte se</Link>
         </p>
       </div>
     </section>

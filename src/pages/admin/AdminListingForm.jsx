@@ -163,7 +163,7 @@ export default function AdminListingForm() {
         .update(payload)
         .eq("id", id);
       if (err) {
-        setError("Chyba pri ukladani: " + err.message);
+        setError("Chyba při ukládání: " + err.message);
         setSaving(false);
         return;
       }
@@ -174,7 +174,7 @@ export default function AdminListingForm() {
         .select()
         .single();
       if (err) {
-        setError("Chyba pri vytvareni: " + err.message);
+        setError("Chyba při vytváření: " + err.message);
         setSaving(false);
         return;
       }
@@ -239,23 +239,23 @@ export default function AdminListingForm() {
   return (
     <div>
       <h1 className="admin__page-title">
-        {isEdit ? "Upravit inzerat #" + id : "Novy inzerat"}
+        {isEdit ? "Upravit inzerát #" + id : "Nový inzerát"}
       </h1>
       <p className="admin__page-subtitle">
         {isEdit
-          ? "Upravte udaje nemovitosti a ulozte zmeny."
-          : "Vyplnte udaje a vytvorte novy inzerat."}
+          ? "Upravte údaje nemovitosti a uložte změny."
+          : "Vyplňte údaje a vytvořte nový inzerát."}
       </p>
 
       {error && <div className="admin__form-error">{error}</div>}
 
       <form onSubmit={handleSubmit} className="admin__form">
-        {/* Zakladni udaje */}
+        {/* Základní údaje */}
         <div className="admin__fieldset">
-          <div className="admin__fieldset-title">Zakladni udaje</div>
+          <div className="admin__fieldset-title">Základní údaje</div>
           <div className="admin__form-grid">
             <div className="admin__form-group admin__form-group--full">
-              <label className="admin__form-label">Nazev</label>
+              <label className="admin__form-label">Název</label>
               <input
                 type="text"
                 name="title"
@@ -265,7 +265,7 @@ export default function AdminListingForm() {
                 required
               />
             </div>
-            {renderSelect("advert_function", CODEBOOKS.advert_function, "Typ nabidky")}
+            {renderSelect("advert_function", CODEBOOKS.advert_function, "Typ nabídky")}
             {renderSelect("advert_subtype", CODEBOOKS.advert_subtype, "Podtyp")}
             {renderInput("advert_price", "Cena", "number")}
           </div>
@@ -275,11 +275,11 @@ export default function AdminListingForm() {
         <div className="admin__fieldset">
           <div className="admin__fieldset-title">Lokace</div>
           <div className="admin__form-grid">
-            {renderInput("locality_city", "Mesto")}
-            {renderInput("locality_citypart", "Mestska cast")}
+            {renderInput("locality_city", "Město")}
+            {renderInput("locality_citypart", "Městská část")}
             {renderInput("locality_region", "Region")}
-            {renderInput("locality_latitude", "Zemepisna sirka", "number", { step: "0.0001" })}
-            {renderInput("locality_longitude", "Zemepisna delka", "number", { step: "0.0001" })}
+            {renderInput("locality_latitude", "Zeměpisná šířka", "number", { step: "0.0001" })}
+            {renderInput("locality_longitude", "Zeměpisná délka", "number", { step: "0.0001" })}
           </div>
         </div>
 
@@ -287,35 +287,35 @@ export default function AdminListingForm() {
         <div className="admin__fieldset">
           <div className="admin__fieldset-title">Parametry nemovitosti</div>
           <div className="admin__form-grid">
-            {renderInput("area", "Plocha (m2)", "number")}
-            {renderInput("usable_area", "Uzitna plocha (m2)", "number")}
-            {renderInput("office_area", "Kancelarska plocha (m2)", "number")}
-            {renderInput("floor_area", "Podlahova plocha (m2)", "number")}
-            {renderInput("land_area", "Plocha pozemku (m2)", "number")}
-            {renderInput("min_divisible_area", "Min. delitelna plocha (m2)", "number")}
-            {renderInput("floors", "Pocet pater", "number")}
-            {renderInput("ceiling_height", "Vyska stropu (m)", "number", { step: "0.1" })}
-            {renderInput("parking_lots", "Parkovaci mista", "number")}
-            {renderInput("garage", "Garaze", "number")}
+            {renderInput("area", "Plocha (m²)", "number")}
+            {renderInput("usable_area", "Užitná plocha (m²)", "number")}
+            {renderInput("office_area", "Kancelářská plocha (m²)", "number")}
+            {renderInput("floor_area", "Podlahová plocha (m²)", "number")}
+            {renderInput("land_area", "Plocha pozemku (m²)", "number")}
+            {renderInput("min_divisible_area", "Min. dělitelná plocha (m²)", "number")}
+            {renderInput("floors", "Počet pater", "number")}
+            {renderInput("ceiling_height", "Výška stropu (m)", "number", { step: "0.1" })}
+            {renderInput("parking_lots", "Parkovací místa", "number")}
+            {renderInput("garage", "Garáže", "number")}
           </div>
         </div>
 
-        {/* CRE specificke */}
+        {/* CRE specifické */}
         <div className="admin__fieldset">
-          <div className="admin__fieldset-title">CRE specificke</div>
+          <div className="admin__fieldset-title">CRE specifické</div>
           <div className="admin__form-grid">
-            {renderSelect("building_class", CODEBOOKS.building_class, "Trida budovy")}
+            {renderSelect("building_class", CODEBOOKS.building_class, "Třída budovy")}
             {renderSelect("certification", CODEBOOKS.certification, "Certifikace")}
-            {renderSelect("floor_load", CODEBOOKS.floor_load, "Nosnost podlahy")}
-            {renderSelect("sprinkler_type", CODEBOOKS.sprinkler_type, "Typ sprinkleru")}
-            {renderSelect("heating_type", CODEBOOKS.heating_type, "Vytapeni")}
-            {renderSelect("parking_type", CODEBOOKS.parking_type, "Typ parkovani")}
-            {renderInput("loading_docks", "Nakladaci rampy", "number")}
+            {renderSelect("floor_load", CODEBOOKS.floor_load, "Únosnost podlahy")}
+            {renderSelect("sprinkler_type", CODEBOOKS.sprinkler_type, "Typ sprinklerů")}
+            {renderSelect("heating_type", CODEBOOKS.heating_type, "Vytápění")}
+            {renderSelect("parking_type", CODEBOOKS.parking_type, "Typ parkování")}
+            {renderInput("loading_docks", "Nakládací rampy", "number")}
             {renderSelect("dock_type", CODEBOOKS.dock_type, "Typ rampy")}
             {renderInput("drive_in_gates", "Drive-in vrata", "number")}
-            {renderInput("crane_capacity", "Kapacita jeraba (t)", "number", { step: "0.1" })}
-            {renderInput("column_grid", "Sloupovy rastr", "text", { placeholder: "napr. 12x24m" })}
-            {renderSelect("lease_type", CODEBOOKS.lease_type, "Typ najmu")}
+            {renderInput("crane_capacity", "Kapacita jeřábu (t)", "number", { step: "0.1" })}
+            {renderInput("column_grid", "Sloupový rastr", "text", { placeholder: "např. 12x24m" })}
+            {renderSelect("lease_type", CODEBOOKS.lease_type, "Typ nájmu")}
             {renderSelect("land_type", CODEBOOKS.land_type, "Typ pozemku")}
             <div className="admin__form-group">
               <label className="admin__form-check">
@@ -325,11 +325,11 @@ export default function AdminListingForm() {
                   checked={form.rail_access === 1}
                   onChange={handleChange}
                 />
-                Vlecka / zeleznicni pristup
+                Vlečka / železniční přístup
               </label>
             </div>
-            {renderInput("highway_distance", "Vzdalenost dalnice (km)", "number", { step: "0.1" })}
-            {renderInput("year_built", "Rok vystavby", "number")}
+            {renderInput("highway_distance", "Vzdálenost dálnice (km)", "number", { step: "0.1" })}
+            {renderInput("year_built", "Rok výstavby", "number")}
             {renderInput("year_renovated", "Rok rekonstrukce", "number")}
           </div>
         </div>
@@ -350,7 +350,7 @@ export default function AdminListingForm() {
             </div>
             <div className="admin__form-group admin__form-group--full">
               <label className="admin__form-label">
-                Vybaveni (jedna polozka na radek)
+                Vybavení (jedna položka na řádek)
               </label>
               <textarea
                 name="features"
@@ -358,7 +358,7 @@ export default function AdminListingForm() {
                 onChange={handleChange}
                 className="admin__form-textarea"
                 rows={5}
-                placeholder={"Klimatizace\nVytah\nRecepce"}
+                placeholder={"Klimatizace\nVýtah\nRecepce"}
               />
             </div>
           </div>
@@ -376,7 +376,7 @@ export default function AdminListingForm() {
           disabled={saving}
           style={{ marginTop: 8 }}
         >
-          {saving ? "Ukladam..." : "Ulozit inzerat"}
+          {saving ? "Ukládám..." : "Uložit inzerát"}
         </button>
       </form>
     </div>
