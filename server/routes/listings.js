@@ -67,7 +67,9 @@ router.get("/listings", (req, res) => {
   const where = [];
   const params = [];
 
-  const { advert_function, advert_subtype, locality_city, area_min, area_max, price_min, price_max, sort, limit: lim, offset: off } = req.query;
+  const { advert_function, advert_subtype, locality_city, area_min, area_max, price_min, price_max,
+    building_class, floor_load, certification, loading_docks_min, ceiling_height_min, ceiling_height_max,
+    sort, limit: lim, offset: off } = req.query;
 
   if (advert_function) { where.push("l.advert_function = ?"); params.push(Number(advert_function)); }
   if (advert_subtype) {
@@ -79,6 +81,12 @@ router.get("/listings", (req, res) => {
   if (area_max) { where.push("(COALESCE(l.usable_area,0)+COALESCE(l.estate_area,0)) <= ?"); params.push(Number(area_max)); }
   if (price_min) { where.push("l.advert_price >= ?"); params.push(Number(price_min)); }
   if (price_max) { where.push("l.advert_price <= ?"); params.push(Number(price_max)); }
+  if (building_class) { where.push("l.building_class = ?"); params.push(Number(building_class)); }
+  if (floor_load) { where.push("l.floor_load >= ?"); params.push(Number(floor_load)); }
+  if (certification) { where.push("l.certification IS NOT NULL"); }
+  if (loading_docks_min) { where.push("l.loading_docks >= ?"); params.push(Number(loading_docks_min)); }
+  if (ceiling_height_min) { where.push("l.ceiling_height >= ?"); params.push(Number(ceiling_height_min)); }
+  if (ceiling_height_max) { where.push("l.ceiling_height <= ?"); params.push(Number(ceiling_height_max)); }
 
   const whereSql = where.length ? " WHERE " + where.join(" AND ") : "";
   const sortMap = {

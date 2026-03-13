@@ -144,7 +144,6 @@ export default function KnowledgeBase() {
                       onClick={() => setOpenSlug(isOpen ? null : t.slug)}
                     >
                       <div className="kb__term-title">
-                        <span className="kb__term-dot" />
                         <h3>{t.term}</h3>
                         {search && (
                           <span className="kb__term-cat-badge">{cat?.title}</span>

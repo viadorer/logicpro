@@ -494,12 +494,11 @@ em{font-family:var(--serif);font-style:italic;color:var(--accent)}
 .kb__term--open{border-color:var(--cat-color,var(--accent));box-shadow:0 4px 16px rgba(0,0,0,.06)}
 .kb__term-header{display:flex;align-items:center;justify-content:space-between;width:100%;padding:16px 20px;border:none;background:transparent;cursor:pointer;font-family:var(--sans);text-align:left;gap:12px}
 .kb__term-title{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.kb__term-dot{width:8px;height:8px;border-radius:50%;background:var(--cat-color,var(--accent));flex-shrink:0}
 .kb__term-title h3{font-size:15px;font-weight:600;color:var(--ink)}
 .kb__term-cat-badge{font-size:11px;font-weight:600;color:var(--cat-color,var(--accent));background:color-mix(in srgb,var(--cat-color) 8%,white);padding:3px 10px;border-radius:999px;flex-shrink:0}
 .kb__term-chevron{font-size:20px;color:var(--ink3);transition:transform .3s;transform:rotate(-90deg);flex-shrink:0;font-weight:700}
 .kb__term-chevron--open{transform:rotate(90deg);color:var(--cat-color,var(--accent))}
-.kb__term-body{padding:0 20px 18px 38px;animation:kbSlideDown .25s ease}
+.kb__term-body{padding:0 20px 18px 20px;animation:kbSlideDown .25s ease}
 .kb__term-body p{font-size:14px;line-height:1.75;color:var(--ink2)}
 
 @keyframes kbSlideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}

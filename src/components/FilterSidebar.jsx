@@ -1,12 +1,12 @@
 import { useState, useCallback, useRef } from "react";
 
 const SUBTYPES = [
-  { value: "26", label: "Sklady" },
-  { value: "25", label: "Kanceláře" },
+  { value: "26,50", label: "Sklady / Logistika" },
+  { value: "25,53", label: "Kanceláře" },
   { value: "27", label: "Výroba" },
-  { value: "28", label: "Obchodní" },
+  { value: "28,51", label: "Obchodní / Retail" },
   { value: "30,29", label: "Ubyt. / Rest." },
-  { value: "38", label: "Činžovní dům" },
+  { value: "38,54", label: "Činžovní / Polyfunkční" },
 ];
 
 const CITIES = ["Praha", "Brno", "Ostrava", "Plzeň", "Olomouc"];
@@ -74,11 +74,40 @@ export default function FilterSidebar({ filters, onChange, open, onClose }) {
       </div>
 
       <div className="filter-group">
-        <span className="filter-group__label">Plocha (m²)</span>
+        <span className="filter-group__label">Plocha (m2)</span>
         <div className="filter-range">
           <input className="filter-input" type="number" placeholder="Od" defaultValue={filters.area_min || ""} onChange={(e) => handleRange("area_min", e.target.value)} />
           <span>&mdash;</span>
           <input className="filter-input" type="number" placeholder="Do" defaultValue={filters.area_max || ""} onChange={(e) => handleRange("area_max", e.target.value)} />
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <span className="filter-group__label">Trida budovy</span>
+        <div className="filter-group__chips">
+          <Chip active={!filters.building_class} onClick={() => setFilter("building_class", null)}>Vse</Chip>
+          <Chip active={filters.building_class === "1"} onClick={() => setFilter("building_class", "1")}>A</Chip>
+          <Chip active={filters.building_class === "2"} onClick={() => setFilter("building_class", "2")}>B</Chip>
+          <Chip active={filters.building_class === "3"} onClick={() => setFilter("building_class", "3")}>C</Chip>
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <span className="filter-group__label">Svetla vyska (m)</span>
+        <div className="filter-range">
+          <input className="filter-input" type="number" placeholder="Od" step="0.5" defaultValue={filters.ceiling_height_min || ""} onChange={(e) => handleRange("ceiling_height_min", e.target.value)} />
+          <span>&mdash;</span>
+          <input className="filter-input" type="number" placeholder="Do" step="0.5" defaultValue={filters.ceiling_height_max || ""} onChange={(e) => handleRange("ceiling_height_max", e.target.value)} />
+        </div>
+      </div>
+
+      <div className="filter-group">
+        <span className="filter-group__label">Unosnost podlahy</span>
+        <div className="filter-group__chips">
+          <Chip active={!filters.floor_load} onClick={() => setFilter("floor_load", null)}>Vse</Chip>
+          <Chip active={filters.floor_load === "2"} onClick={() => setFilter("floor_load", "2")}>3+ t/m2</Chip>
+          <Chip active={filters.floor_load === "3"} onClick={() => setFilter("floor_load", "3")}>5+ t/m2</Chip>
+          <Chip active={filters.floor_load === "5"} onClick={() => setFilter("floor_load", "5")}>10+ t/m2</Chip>
         </div>
       </div>
 
