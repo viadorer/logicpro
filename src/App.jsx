@@ -15,9 +15,20 @@ import AdminListings from "./pages/admin/AdminListings";
 import AdminListingForm from "./pages/admin/AdminListingForm";
 import AdminInquiries from "./pages/admin/AdminInquiries";
 
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
+      {/* Admin routes — no Header/Footer */}
       <Route
         path="/admin"
         element={
@@ -31,29 +42,22 @@ export default function App() {
         <Route path="inzerat/:id" element={<AdminListingForm />} />
         <Route path="poptavky" element={<AdminInquiries />} />
       </Route>
+
+      {/* Public routes with Header/Footer */}
+      <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+      <Route path="/nabidky" element={<PublicLayout><Listings /></PublicLayout>} />
+      <Route path="/detail/:id" element={<PublicLayout><Detail /></PublicLayout>} />
+      <Route path="/knowledge-base" element={<PublicLayout><KnowledgeBase /></PublicLayout>} />
+      <Route path="/prihlaseni" element={<PublicLayout><Login /></PublicLayout>} />
+      <Route path="/registrace" element={<PublicLayout><Register /></PublicLayout>} />
       <Route
-        path="*"
+        path="/profil"
         element={
-          <>
-            <Header />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/nabidky" element={<Listings />} />
-              <Route path="/detail/:id" element={<Detail />} />
-              <Route path="/knowledge-base" element={<KnowledgeBase />} />
-              <Route path="/prihlaseni" element={<Login />} />
-              <Route path="/registrace" element={<Register />} />
-              <Route
-                path="/profil"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-            <Footer />
-          </>
+          <PublicLayout>
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          </PublicLayout>
         }
       />
     </Routes>
