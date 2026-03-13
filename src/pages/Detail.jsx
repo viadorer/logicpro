@@ -6,6 +6,7 @@ import Gallery from "../components/Gallery";
 import ParamsGrid from "../components/ParamsGrid";
 import MapView from "../components/MapView";
 import Card from "../components/Card";
+import InquiryForm from "../components/InquiryForm";
 
 export default function Detail() {
   const { id } = useParams();
@@ -108,17 +109,7 @@ export default function Detail() {
           </div>
 
           <aside className="inquiry glass">
-            <h3>Máte zájem?</h3>
-            <p>Kontaktujte nás pro více informací nebo si domluvte osobní prohlídku nemovitosti.</p>
-            <div className="inquiry__agent">
-              <div className="inquiry__avatar" />
-              <div>
-                <strong>Jan Novák</strong>
-                <span>Senior konzultant</span>
-              </div>
-            </div>
-            <a href="tel:+420224835000" className="btn btn--outline btn--full btn--sm">+420 224 835 000</a>
-            <a href="mailto:info@logicpro.cz" className="btn btn--fill btn--full btn--sm">Napsat zprávu</a>
+            <InquiryForm listing={l} />
           </aside>
         </div>
       </section>

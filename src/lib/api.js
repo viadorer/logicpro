@@ -34,3 +34,7 @@ export function fetchCodebooks() {
 export function fetchFilters() {
   return fetchJSON("/filters");
 }
+
+export function fetchSearch(query, limit = 8) {
+  return fetchJSON(`/search?q=${encodeURIComponent(query)}&limit=${limit}`);
+}

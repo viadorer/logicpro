@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { fetchListings } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 import Card from "../components/Card";
 import FilterSidebar from "../components/FilterSidebar";
 import MapListings from "../components/MapListings";
@@ -13,6 +15,7 @@ export default function Listings() {
   const [loading, setLoading] = useState(true);
   const [filterOpen, setFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid"); // grid | map
+  const { user } = useAuth();
 
   const loadListings = useCallback(async (f) => {
     setLoading(true);
@@ -25,7 +28,7 @@ export default function Listings() {
   }, []);
 
   useEffect(() => {
-    // Sync filters → URL
+    // Sync filters from URL (including q param)
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries(filters)) {
       if (v) params.set(k, v);
@@ -33,6 +36,26 @@ export default function Listings() {
     setSearchParams(params, { replace: true });
     loadListings(filters);
   }, [filters, setSearchParams, loadListings]);
+
+  // Sync q param from URL into filters on mount / URL change
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && q !== filters.q) {
+      setFilters((prev) => ({ ...prev, q }));
+    }
+  }, [searchParams]);
+
+  const hasActiveFilters = Object.values(filters).some((v) => v);
+
+  async function handleSaveSearch() {
+    const name = window.prompt("Nazev hledani:");
+    if (!name) return;
+    await supabase.from("saved_searches").insert({
+      user_id: user.id,
+      name,
+      filters,
+    });
+  }
 
   return (
     <>
@@ -62,6 +85,14 @@ export default function Listings() {
                 Nalezeno <strong>{total}</strong> nemovitostí
               </span>
               <div className="listings-page__actions">
+                {user && hasActiveFilters && (
+                  <button
+                    className="btn btn--outline btn--sm"
+                    onClick={handleSaveSearch}
+                  >
+                    Ulozit hledani
+                  </button>
+                )}
                 <button
                   id="filterToggle"
                   className="btn btn--outline btn--sm"

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { CODEBOOKS, formatPrice, formatArea } from "../lib/codebooks";
+import FavoriteButton from "./FavoriteButton";
 
 export default function Card({ listing: l }) {
   const isRent = l.advert_function === 2;
@@ -11,8 +12,9 @@ export default function Card({ listing: l }) {
       <div className="card__img">
         <img src={l.main_image} alt={l.title} loading="lazy" />
         <span className={`card__badge ${isRent ? "card__badge--rent" : "card__badge--sale"}`}>
-          {isRent ? "Pronájem" : "Prodej"}
+          {isRent ? "Pronajem" : "Prodej"}
         </span>
+        <FavoriteButton listingId={l.id} />
       </div>
       <div className="card__body">
         <h3>{l.title}</h3>
