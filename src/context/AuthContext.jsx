@@ -9,15 +9,25 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   async function fetchProfile(userId) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-    setProfile(data);
+    if (!supabase) return;
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+      setProfile(data);
+    } catch {
+      /* ignore */
+    }
   }
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       const u = session?.user ?? null;
       setUser(u);
@@ -41,6 +51,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function signIn(email, password) {
+    if (!supabase) throw new Error("Supabase neni nakonfigurovano");
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -49,6 +60,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp(email, password, fullName) {
+    if (!supabase) throw new Error("Supabase neni nakonfigurovano");
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -58,6 +70,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signOut() {
+    if (!supabase) return;
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser(null);

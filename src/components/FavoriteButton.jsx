@@ -10,7 +10,7 @@ export default function FavoriteButton({ listingId }) {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !supabase) return;
     supabase
       .from("favorites")
       .select("id")
@@ -31,7 +31,7 @@ export default function FavoriteButton({ listingId }) {
       return;
     }
 
-    if (busy) return;
+    if (busy || !supabase) return;
     setBusy(true);
 
     try {
