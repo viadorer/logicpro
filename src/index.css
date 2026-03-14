@@ -234,6 +234,8 @@ em{font-family:var(--serif);font-style:italic;color:var(--accent)}
 .footer__soc{display:flex;gap:20px}
 .footer__soc a{font-weight:500;transition:color .2s}
 .footer__soc a:hover{color:var(--accent)}
+.footer__admin-link{margin-left:auto;opacity:.5;font-size:13px}
+.footer__admin-link:hover{opacity:1}
 
 /* ========== BREADCRUMB ========== */
 .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3);margin-bottom:20px}

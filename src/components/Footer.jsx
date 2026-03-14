@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Footer() {
+  const { profile } = useAuth();
   return (
     <footer className="footer">
       <div className="wrap">
@@ -45,6 +47,9 @@ export default function Footer() {
           <div className="footer__soc">
             <a href="#">LinkedIn</a>
             <a href="#">Twitter</a>
+            {profile?.role === "admin" && (
+              <Link to="/admin" className="footer__admin-link">Administrace</Link>
+            )}
           </div>
         </div>
       </div>
