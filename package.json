@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vercel dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "scrape:108": "node scripts/scrape-108.mjs",
+    "scrape:108:dry": "node scripts/scrape-108.mjs --dry-run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0",
