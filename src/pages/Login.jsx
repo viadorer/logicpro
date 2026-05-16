@@ -37,6 +37,7 @@ export default function Login() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
             required
           />
           <input
@@ -45,8 +46,14 @@ export default function Login() {
             placeholder="Heslo"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
             required
           />
+          <div style={{ textAlign: "right", marginTop: -8, marginBottom: 8 }}>
+            <Link to="/zapomenute-heslo" style={{ fontSize: 13, color: "var(--ink3)" }}>
+              Zapomenuté heslo?
+            </Link>
+          </div>
           <button
             type="submit"
             className="btn btn--fill btn--full"

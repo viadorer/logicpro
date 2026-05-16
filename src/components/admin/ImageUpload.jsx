@@ -1,11 +1,13 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
+import { useDialog } from "../../lib/useDialog";
 
 const ImageUpload = forwardRef(function ImageUpload({ listingId }, ref) {
   const [existingImages, setExistingImages] = useState([]);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [pendingPreviews, setPendingPreviews] = useState([]);
   const [dragging, setDragging] = useState(false);
+  const { confirm, DialogPortal } = useDialog();
 
   // Fetch existing images for edit mode
   useEffect(() => {
@@ -85,7 +87,13 @@ const ImageUpload = forwardRef(function ImageUpload({ listingId }, ref) {
   }
 
   async function deleteExisting(img) {
-    if (!window.confirm("Smazat tento obrázek?")) return;
+    const ok = await confirm({
+      title: "Smazat obrázek?",
+      message: "Obrázek bude trvale odstraněn.",
+      confirmLabel: "Smazat",
+      danger: true,
+    });
+    if (!ok) return;
     // Remove from storage
     const urlParts = img.url.split("/listing-images/");
     if (urlParts[1]) {
@@ -176,6 +184,7 @@ const ImageUpload = forwardRef(function ImageUpload({ listingId }, ref) {
           ))}
         </div>
       )}
+      <DialogPortal />
     </div>
   );
 });

@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { CODEBOOKS } from "../../lib/codebooks";
+import { useDialog } from "../../lib/useDialog";
 
 export default function AdminListings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { confirm, DialogPortal } = useDialog();
 
   async function fetchListings() {
     setLoading(true);
@@ -22,7 +24,13 @@ export default function AdminListings() {
   }, []);
 
   async function handleDelete(id) {
-    if (!window.confirm("Opravdu chcete smazat tuto nemovitost?")) return;
+    const ok = await confirm({
+      title: "Smazat nemovitost?",
+      message: "Tato akce je nevratná. Inzerát i jeho fotografie budou trvale odstraněny.",
+      confirmLabel: "Smazat",
+      danger: true,
+    });
+    if (!ok) return;
     const { error } = await supabase.from("listings").delete().eq("id", id);
     if (!error) {
       setListings((prev) => prev.filter((l) => l.id !== id));
@@ -104,6 +112,7 @@ export default function AdminListings() {
           </table>
         </div>
       )}
+      <DialogPortal />
     </div>
   );
 }

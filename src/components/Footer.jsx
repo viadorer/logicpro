@@ -17,10 +17,10 @@ export default function Footer() {
           </div>
           <div className="footer__col">
             <strong>Služby</strong>
-            <Link to="/">Zastupování nájemce</Link>
-            <Link to="/">Zastupování vlastníka</Link>
-            <Link to="/">Investiční poradenství</Link>
-            <Link to="/">Ocenění</Link>
+            <Link to="/#sluzby">Zastupování nájemce</Link>
+            <Link to="/#sluzby">Zastupování vlastníka</Link>
+            <Link to="/#sluzby">Investiční poradenství</Link>
+            <Link to="/#sluzby">Ocenění</Link>
           </div>
           <div className="footer__col">
             <strong>Nemovitosti</strong>
@@ -32,8 +32,8 @@ export default function Footer() {
           <div className="footer__col">
             <strong>Zdroje</strong>
             <Link to="/knowledge-base">Knowledge Base</Link>
-            <Link to="/">Z trhu</Link>
-            <Link to="/">Kariéra</Link>
+            <Link to="/#z-trhu">Z trhu</Link>
+            <Link to="/#kontakt">Kariéra</Link>
           </div>
           <div className="footer__col">
             <strong>Kontakt</strong>
@@ -43,10 +43,11 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer__bot">
-          <span>&copy; 2025 LogicPro. Všechna práva vyhrazena.</span>
+          <span>&copy; {new Date().getFullYear()} LogicPro. Všechna práva vyhrazena.</span>
           <div className="footer__soc">
-            <a href="#">LinkedIn</a>
-            <a href="#">Twitter</a>
+            <Link to="/ochrana-osobnich-udaju">Ochrana osobních údajů</Link>
+            <Link to="/obchodni-podminky">Obchodní podmínky</Link>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             {profile?.role === "admin" && (
               <Link to="/admin" className="footer__admin-link">Administrace</Link>
             )}

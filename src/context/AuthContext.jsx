@@ -22,6 +22,10 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function refreshProfile() {
+    if (user?.id) await fetchProfile(user.id);
+  }
+
   useEffect(() => {
     if (!supabase) {
       setLoading(false);
@@ -79,7 +83,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, profile, loading, signIn, signUp, signOut }}
+      value={{ user, profile, loading, signIn, signUp, signOut, refreshProfile }}
     >
       {children}
     </AuthContext.Provider>

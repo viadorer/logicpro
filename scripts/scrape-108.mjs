@@ -13,6 +13,7 @@ import { createClient } from "@supabase/supabase-js";
 import { readFileSync, existsSync, writeFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { SREALITY_TO_LOGICPRO } from "../lib/codebooks.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -99,43 +100,11 @@ async function fetchS(url, retries = 3) {
 // building_type: 1=Drevena, 2=Cihlova, ..., 6=Skeletova, 8=Ocelova
 // energy_efficiency_rating: 1=A, 2=B, ..., 7=G
 
-const CONDITION_MAP = {
-  "Velmi dobrý": 1, "Dobrý": 2, "Špatný": 3, "Ve výstavbě": 4,
-  "Projekt": 5, "Novostavba": 6, "K demolici": 7,
-  "Před rekonstrukcí": 8, "Po rekonstrukci": 9, "V rekonstrukci": 8,
-};
-const MATERIAL_MAP = {
-  "Dřevostavba": 1, "Dřevěná": 1, "Cihlová": 2, "Kamenná": 3,
-  "Montovaná": 4, "Panelová": 5, "Skeletová": 6, "Smíšená": 7, "Ocelová": 8,
-  "Železobetonová": 9, "Sendvičový panel": 10,
-};
-const ENERGY_MAP = {
-  "Mimořádně úsporná": 1, "Velmi úsporná": 2, "Úsporná": 3,
-  "Méně úsporná": 4, "Nehospodárná": 5, "Velmi nehospodárná": 6,
-  "Mimořádně nehospodárná": 7,
-};
-const HEATING_MAP = {
-  "Ústřední": 1, "Plynové": 2, "Elektrické": 3, "Tepelné čerpadlo": 4,
-  "Podlahové": 5, "Lokální": 2,
-};
-// Sreality subtype -> LogicPro advert_subtype
-const SUBTYPE_MAP = {
-  26: 26, // Sklady -> Sklady
-  27: 27, // Vyroba -> Vyroba
-  29: 28, // Obchodni prostory
-  25: 25, // Kancelare
-  30: 29, // Ubytovani
-  31: 30, // Restaurace
-  32: 31, // Zemedelsky
-  38: 38, // Cinzovni dum
-  46: 49, // Virtualni kancelar
-  40: 25, // Ordinace -> Kancelare
-  41: 29, // Apartmany -> Ubytovani
-  42: 32, // Ostatni
-  // Pozemky (category_main=3, sub=18=komercni)
-  18: 28, // Komercni pozemek -> Obchodni prostory
-  19: 28, // Pozemek bydleni
-};
+const CONDITION_MAP = SREALITY_TO_LOGICPRO.building_condition;
+const MATERIAL_MAP = SREALITY_TO_LOGICPRO.building_type;
+const ENERGY_MAP = SREALITY_TO_LOGICPRO.energy_efficiency_rating;
+const HEATING_MAP = SREALITY_TO_LOGICPRO.heating_type;
+const SUBTYPE_MAP = SREALITY_TO_LOGICPRO.advert_subtype;
 
 function mapSubtype(mainCat, subCb) {
   // Pozemky
@@ -218,7 +187,14 @@ async function insertListing(detail) {
   const energyRaw = getItem(items, "Energetická náročnost budovy");
   const heatingRaw = getItem(items, "Topení");
 
+  const featuresArr = extractFeatures(detail, items);
+  const externalId = String(detail.hash_id || detail.recommendations_data?.hash_id || "");
+
   const listing = {
+    source: "sreality-108",
+    external_id: externalId || null,
+    status: "active",
+    last_seen_at: new Date().toISOString(),
     title,
     advert_function: advertFunction,
     advert_type: 4, // Komercni
@@ -247,7 +223,8 @@ async function insertListing(detail) {
     heating_type: HEATING_MAP[heatingRaw] || null,
     year_built: getItemNum(items, "Rok kolaudace") || getItemNum(items, "Rok výstavby"),
     year_renovated: getItemNum(items, "Rok rekonstrukce"),
-    features: JSON.stringify(extractFeatures(detail, items)),
+    features: JSON.stringify(featuresArr),
+    features_jsonb: featuresArr.length ? featuresArr : null,
   };
 
   // Odstranit null hodnoty
@@ -257,14 +234,20 @@ async function insertListing(detail) {
 
   if (DRY_RUN) {
     console.log("  [DRY] Listing:", JSON.stringify(listing, null, 2).slice(0, 300));
-    return { id: 0, skipped: false };
+    return { id: 0, skipped: false, externalId };
   }
 
-  const { data, error } = await sb.from("listings").insert(listing).select("id").single();
+  // Upsert pres UNIQUE(source, external_id) — pri opakovanem behu se aktualizuji
+  // existujici inzeraty, misto vyhozeni duplikatni chyby.
+  const { data, error } = await sb
+    .from("listings")
+    .upsert(listing, { onConflict: "source,external_id" })
+    .select("id")
+    .single();
   if (error) {
-    throw new Error(`DB insert: ${error.message}`);
+    throw new Error(`DB upsert: ${error.message}`);
   }
-  return { id: data.id, skipped: false };
+  return { id: data.id, skipped: false, externalId };
 }
 
 function extractFeatures(detail, items) {
@@ -335,6 +318,7 @@ async function main() {
   const allEstates = [];
   let page = 0;
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     await sleep(DELAY_MS);
     try {
@@ -357,11 +341,17 @@ async function main() {
 
   console.log(`\nNalezeno ${allEstates.length} inzeratu. Zpracovavam detaily...\n`);
 
+  // Set externich ID, ktera jsme videli v tomto behu — pouzijeme
+  // pro soft-archive listingu, ktere uz na Sreality nejsou.
+  const seenExternalIds = new Set();
+
   // 2. Pro kazdy inzerat stahni detail a vloz do DB
   for (let i = 0; i < allEstates.length; i++) {
     const est = allEstates[i];
     const hid = est.hash_id;
     const key = `sr-${hid}`;
+
+    seenExternalIds.add(String(hid));
 
     // Deduplikace
     if (state.seen[key]) {
@@ -406,12 +396,41 @@ async function main() {
     }
   }
 
+  // 3. Soft-archive — listingy ze stejneho source, ktere jsme tentokrat nevideli
+  //    a nebyly aktualizovany za poslednich 24h, oznacime jako archived.
+  if (!DRY_RUN && seenExternalIds.size > 0) {
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { data: stale, error: staleErr } = await sb
+      .from("listings")
+      .select("id, external_id")
+      .eq("source", "sreality-108")
+      .eq("status", "active")
+      .lt("last_seen_at", cutoff);
+
+    if (staleErr) {
+      console.error("Soft-archive: nepovedlo se najit stale listingy:", staleErr.message);
+    } else {
+      const toArchive = (stale || [])
+        .filter((r) => !seenExternalIds.has(String(r.external_id)))
+        .map((r) => r.id);
+
+      if (toArchive.length) {
+        const { error: archErr } = await sb
+          .from("listings")
+          .update({ status: "archived" })
+          .in("id", toArchive);
+        if (archErr) console.error("Soft-archive update chyba:", archErr.message);
+        else console.log(`Archivovano ${toArchive.length} listingu, ktere uz na Sreality nejsou.`);
+      }
+    }
+  }
+
   saveState(state);
   const totalMin = ((Date.now() - t0) / 60000).toFixed(1);
   console.log(`
   HOTOVO za ${totalMin} min
-  Vlozeno: ${state.stats.inserted}
-  Preskoceno: ${state.stats.skipped}
+  Vlozeno/aktualizovano: ${state.stats.inserted}
+  Preskoceno (cache): ${state.stats.skipped}
   Chyby: ${state.stats.errors}
   Obrazku: ${state.stats.images}
 `);

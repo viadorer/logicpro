@@ -36,12 +36,12 @@ export default function Header() {
           <span className="logo__pro">Pro</span>
           <span className="logo__dot" />
         </Link>
-        <nav className={`nav${navOpen ? " nav--open" : ""}`}>
-          <Link to="/" className="nav__link">Služby</Link>
+        <nav className={`nav${navOpen ? " nav--open" : ""}`} aria-label="Hlavní navigace">
+          <Link to="/#sluzby" className="nav__link">Služby</Link>
           <Link to="/nabidky" className="nav__link">Nemovitosti</Link>
-          <Link to="/" className="nav__link">Z trhu</Link>
-          <Link to="/" className="nav__link">Reference</Link>
-          <Link to="/" className="nav__link">Kontakt</Link>
+          <Link to="/#z-trhu" className="nav__link">Z trhu</Link>
+          <Link to="/#reference" className="nav__link">Reference</Link>
+          <Link to="/#kontakt" className="nav__link">Kontakt</Link>
         </nav>
         <SearchBar />
         <div className="header__r">
@@ -64,7 +64,13 @@ export default function Header() {
               Přihlášení
             </Link>
           )}
-          <button className="burger" onClick={() => setNavOpen(!navOpen)}>
+          <button
+            type="button"
+            className="burger"
+            onClick={() => setNavOpen(!navOpen)}
+            aria-label={navOpen ? "Zavřít menu" : "Otevřít menu"}
+            aria-expanded={navOpen}
+          >
             <span /><span /><span />
           </button>
         </div>

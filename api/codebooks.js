@@ -1,76 +1,10 @@
-const CODEBOOKS = {
-  advert_function: { 1: "Prodej", 2: "Pronájem", 3: "Dražby" },
-  advert_type: { 1: "Byty", 2: "Domy", 3: "Pozemky", 4: "Komerční", 5: "Ostatní" },
-  advert_subtype: {
-    25: "Kanceláře", 26: "Sklady", 27: "Výroba", 28: "Obchodní prostory",
-    29: "Ubytování", 30: "Restaurace", 31: "Zemědělský", 32: "Ostatní",
-    38: "Činžovní dům", 49: "Virtuální kancelář",
-    50: "Logistika", 51: "Retail park", 52: "Datacentrum",
-    53: "Coworking", 54: "Polyfunkční", 55: "Garáže / Parking",
-  },
-  advert_price_currency: { 1: "CZK", 2: "USD", 3: "EUR" },
-  advert_price_unit: {
-    1: "za nemovitost", 2: "za měsíc", 3: "za m²",
-    4: "za m²/měs.", 5: "za m²/rok", 6: "za rok",
-  },
-  building_condition: {
-    1: "Velmi dobrý", 2: "Dobrý", 3: "Špatný", 4: "Ve výstavbě",
-    5: "Projekt", 6: "Novostavba", 7: "K demolici",
-    8: "Před rekonstrukcí", 9: "Po rekonstrukci",
-  },
-  building_type: {
-    1: "Dřevěná", 2: "Cihlová", 3: "Kamenná", 4: "Montovaná",
-    5: "Panelová", 6: "Skeletová", 7: "Smíšená", 8: "Ocelová",
-    9: "Železobetonová", 10: "Sendvičový panel",
-  },
-  building_class: { 1: "A", 2: "B", 3: "C" },
-  certification: {
-    1: "BREEAM Outstanding", 2: "BREEAM Excellent", 3: "BREEAM Very Good", 4: "BREEAM Good", 5: "BREEAM Pass",
-    6: "LEED Platinum", 7: "LEED Gold", 8: "LEED Silver", 9: "LEED Certified",
-    10: "DGNB Platin", 11: "DGNB Gold", 12: "DGNB Silber",
-  },
-  furnished: { 1: "Ano", 2: "Ne", 3: "Částečně" },
-  elevator: { 1: "Ano", 2: "Ne" },
-  energy_efficiency_rating: { 1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G" },
-  object_location: {
-    1: "Centrum obce", 2: "Klidná část obce", 3: "Rušná část obce",
-    4: "Okraj obce", 5: "Sídliště", 6: "Polosamota", 7: "Samota",
-  },
-  floor_load: {
-    1: "do 3 t/m²", 2: "3–5 t/m²", 3: "5–8 t/m²", 4: "8–10 t/m²", 5: "nad 10 t/m²",
-  },
-  sprinkler_type: {
-    1: "Bez sprinklerů", 2: "Mokrý systém", 3: "Suchý systém",
-    4: "ESFR", 5: "Pěnový",
-  },
-  heating_type: {
-    1: "Ústřední", 2: "Plynové", 3: "Elektrické", 4: "Tepelné čerpadlo",
-    5: "Podlahové", 6: "VZT + rekuperace", 7: "Bez vytápění",
-  },
-  parking_type: {
-    1: "Venkovní", 2: "Kryté", 3: "Podzemní garáž", 4: "Parkovací dům",
-    5: "Kamionové stání", 6: "Bez parkování",
-  },
-  lease_type: {
-    1: "Triple Net (NNN)", 2: "Double Net (NN)", 3: "Gross Lease",
-    4: "Modified Gross", 5: "Turnover Rent",
-  },
-  dock_type: {
-    1: "Nakládací rampa", 2: "Drive-in vrata", 3: "Cross-dock",
-    4: "Nájezdová rampa", 5: "Boční nakládka",
-  },
-  land_type: {
-    1: "Komerční", 2: "Průmyslové", 3: "Smíšené", 4: "Zemědělské",
-    5: "Stavební", 6: "Brownfield", 7: "Greenfield",
-  },
-  utilities: {
-    1: "Elektřina", 2: "Plyn", 3: "Voda", 4: "Kanalizace",
-    5: "Optické připojení", 6: "Železniční vlečka", 7: "Elektřina 400V",
-  },
-  extra_info: { 1: "Rezervováno", 2: "Prodáno" },
-};
+import { CODEBOOKS } from "../lib/codebooks.js";
 
-export default function handler(_req, res) {
-  res.setHeader("Cache-Control", "public, max-age=86400");
+export default function handler(req, res) {
+  if (req.method !== "GET") {
+    res.setHeader("Allow", "GET");
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+  res.setHeader("Cache-Control", "public, max-age=86400, s-maxage=86400, immutable");
   res.json(CODEBOOKS);
 }

@@ -1,10 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchFeatured } from "../lib/api";
+import { useSEO } from "../lib/useSEO";
 import Card from "../components/Card";
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
+
+  useSEO({
+    title: "Komerční nemovitosti v CEE",
+    description: "LogicPro — kanceláře, sklady, výroba, retail. 15 let na trhu, 10M+ m² zprostředkováno. Najdeme prostory přesně pro vás.",
+    canonical: "/",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      name: "LogicPro",
+      url: "https://logicpro.cz/",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Národní 10",
+        addressLocality: "Praha",
+        postalCode: "110 00",
+        addressCountry: "CZ",
+      },
+      telephone: "+420 224 835 000",
+      areaServed: "CZ",
+    },
+  });
 
   useEffect(() => {
     fetchFeatured().then((d) => setFeatured(d.listings)).catch(() => {});
@@ -26,13 +48,13 @@ export default function Home() {
           </div>
           <div className="hero__visual">
             <div className="hero__img-main">
-              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Moderní kancelářská budova" />
+              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Moderní kancelářská budova" loading="eager" decoding="async" fetchPriority="high" />
             </div>
             <div className="hero__img-sm hero__img-sm--1">
-              <img src="https://images.unsplash.com/photo-1565610222536-ef125c59da2e?w=400&q=80" alt="Logistický sklad" />
+              <img src="https://images.unsplash.com/photo-1565610222536-ef125c59da2e?w=400&q=80" alt="Logistický sklad" loading="lazy" decoding="async" />
             </div>
             <div className="hero__img-sm hero__img-sm--2">
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80" alt="Interiér kanceláře" />
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80" alt="Interiér kanceláře" loading="lazy" decoding="async" />
             </div>
             <div className="hero__float glass">
               <strong>2 500+</strong>

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /prihlaseni
+Disallow: /registrace
+Disallow: /profil
+Disallow: /api/
+
+Sitemap: https://logicpro.cz/sitemap.xml

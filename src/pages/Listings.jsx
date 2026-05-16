@@ -3,6 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { fetchListings } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import { useDialog } from "../lib/useDialog";
+import { useSEO } from "../lib/useSEO";
 import Card from "../components/Card";
 import FilterSidebar from "../components/FilterSidebar";
 import MapListings from "../components/MapListings";
@@ -16,6 +18,13 @@ export default function Listings() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid"); // grid | map
   const { user } = useAuth();
+  const { prompt, DialogPortal } = useDialog();
+
+  useSEO({
+    title: "Nabídka prostor",
+    description: "Aktuální nabídka komerčních nemovitostí v ČR a CEE — kanceláře, sklady, výroba, retail.",
+    canonical: "/nabidky",
+  });
 
   const loadListings = useCallback(async (f) => {
     setLoading(true);
@@ -37,7 +46,10 @@ export default function Listings() {
     loadListings(filters);
   }, [filters, setSearchParams, loadListings]);
 
-  // Sync q param from URL into filters on mount / URL change
+  // Sync q param from URL into filters on mount / URL change.
+  // Zámerne neuvádíme filters.q v deps — ten cyklus by se zacyklil
+  // (setFilters by trigger znovu URL update, ten triggered tento effect).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const q = searchParams.get("q");
     if (q && q !== filters.q) {
@@ -48,7 +60,12 @@ export default function Listings() {
   const hasActiveFilters = Object.values(filters).some((v) => v);
 
   async function handleSaveSearch() {
-    const name = window.prompt("Název hledání:");
+    const name = await prompt({
+      title: "Uložit hledání",
+      message: "Pojmenujte si toto hledání pro pozdější použití.",
+      placeholder: "Např. Sklady Praha 800+ m²",
+      confirmLabel: "Uložit",
+    });
     if (!name) return;
     await supabase.from("saved_searches").insert({
       user_id: user.id,
@@ -143,6 +160,7 @@ export default function Listings() {
           </div>
         </div>
       </section>
+      <DialogPortal />
     </>
   );
 }

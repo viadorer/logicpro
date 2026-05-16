@@ -1,10 +1,12 @@
 import { useEffect, useState, Fragment } from "react";
 import { supabase } from "../../lib/supabase";
+import { useDialog } from "../../lib/useDialog";
 
 export default function AdminInquiries() {
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
+  const { confirm, DialogPortal } = useDialog();
 
   async function fetchInquiries() {
     setLoading(true);
@@ -21,7 +23,13 @@ export default function AdminInquiries() {
   }, []);
 
   async function handleDelete(id) {
-    if (!window.confirm("Opravdu chcete smazat tuto poptávku?")) return;
+    const ok = await confirm({
+      title: "Smazat poptávku?",
+      message: "Akce je nevratná.",
+      confirmLabel: "Smazat",
+      danger: true,
+    });
+    if (!ok) return;
     const { error } = await supabase.from("inquiries").delete().eq("id", id);
     if (!error) {
       setInquiries((prev) => prev.filter((i) => i.id !== id));
@@ -114,6 +122,7 @@ export default function AdminInquiries() {
           </table>
         </div>
       )}
+      <DialogPortal />
     </div>
   );
 }

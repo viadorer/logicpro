@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchDetail, fetchSimilar } from "../lib/api";
-import { CODEBOOKS } from "../lib/codebooks";
+import { CODEBOOKS, formatPrice, formatArea } from "../lib/codebooks";
+import { useSEO } from "../lib/useSEO";
 import Gallery from "../components/Gallery";
 import ParamsGrid from "../components/ParamsGrid";
 import MapView from "../components/MapView";
@@ -28,6 +29,55 @@ export default function Detail() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  // SEO musi byt zavolano ve stejnem poradi pri kazdem renderu (React rules).
+  // Pri prvnim renderu nebo prazdnem stavu posleme prazdne args.
+  const l = listing;
+  const isRent = l?.advert_function === 2;
+  const badge = isRent ? "Pronájem" : "Prodej";
+  const features = Array.isArray(l?.features)
+    ? l.features
+    : (Array.isArray(l?.features_jsonb) ? l.features_jsonb : []);
+  const address = l ? [l.locality_citypart, l.locality_region].filter(Boolean).join(", ") : "";
+  const heroImage = l?.images?.find((i) => i.is_main === 1)?.url || l?.images?.[0]?.url;
+  const areaStr = l ? formatArea(l) : null;
+
+  useSEO(l ? {
+    title: `${l.title} — ${l.locality_city}`,
+    description: `${badge}: ${l.title} v lokalitě ${l.locality_city}${areaStr ? ", " + areaStr : ""}. ${formatPrice(l)}.`,
+    canonical: `/detail/${l.id}`,
+    image: heroImage,
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "RealEstateListing",
+      name: l.title,
+      description: l.description?.slice(0, 500),
+      url: `https://logicpro.cz/detail/${l.id}`,
+      image: heroImage,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: l.locality_city,
+        addressRegion: l.locality_region,
+        streetAddress: l.locality_street,
+        addressCountry: "CZ",
+      },
+      ...(l.locality_latitude && l.locality_longitude ? {
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: l.locality_latitude,
+          longitude: l.locality_longitude,
+        },
+      } : {}),
+      ...(l.advert_price ? {
+        offers: {
+          "@type": "Offer",
+          price: l.advert_price,
+          priceCurrency: CODEBOOKS.advert_price_currency[l.advert_price_currency] || "CZK",
+          availability: l.status === "active" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        },
+      } : {}),
+    },
+  } : {});
+
   if (loading) {
     return (
       <div style={{ padding: "200px 0", textAlign: "center" }}>
@@ -44,12 +94,6 @@ export default function Detail() {
       </div>
     );
   }
-
-  const l = listing;
-  const isRent = l.advert_function === 2;
-  const badge = isRent ? "Pronájem" : "Prodej";
-  const features = Array.isArray(l.features) ? l.features : [];
-  const address = [l.locality_citypart, l.locality_region].filter(Boolean).join(", ");
 
   return (
     <>

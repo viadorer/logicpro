@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Map, { Marker, Popup, NavigationControl, FullscreenControl } from "react-map-gl/maplibre";
-import { formatPrice, formatArea, CODEBOOKS } from "../lib/codebooks";
+import { formatPrice, CODEBOOKS } from "../lib/codebooks";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const mapStyle = {
