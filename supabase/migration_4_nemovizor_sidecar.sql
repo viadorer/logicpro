@@ -27,8 +27,11 @@
 CREATE TABLE IF NOT EXISTS public.property_extensions (
   -- Identita
   property_id          TEXT PRIMARY KEY,             -- Nemovizor stable ID
-                                                     -- (zmenit na UUID pokud
-                                                     -- Nemovizor pouziva UUID)
+                                                     -- (Nemovizor pouziva UUID — ulozeno jako TEXT
+                                                     -- pro flexibilitu pri budoucim source mixu)
+  -- Legacy LogicPro int ID pro 301 redirecty ze starych URL /detail/123
+  legacy_logicpro_id   BIGINT UNIQUE,
+
   -- ===== INDUSTRIAL FIELDS (LogicPro autoritativni zdroj) =====
   building_class       INTEGER,                      -- 1=A, 2=B, 3=C
   certification        TEXT[],                       -- ["BREEAM Excellent", "LEED Gold"]
@@ -49,6 +52,10 @@ CREATE TABLE IF NOT EXISTS public.property_extensions (
   shop_area            INTEGER,
   store_area           INTEGER,
   workshop_area        INTEGER,
+
+  -- LogicPro granular subtype, ktery Nemovizor nezna (Logistika, Retail park,
+  -- Datacentrum, Coworking, Polyfunkcni, Garaze). Mapuje se v UI filteru.
+  sub_type_local       TEXT,                         -- "logistika"|"retail_park"|"datacentrum"|"coworking"|"polyfunkcni"|"garaze"
 
   -- ===== HOT MIRROR (denormalizace z Nemovizoru pro filter performance) =====
   -- Tyto sloupce drzime synced s Nemovizorem (push webhook nebo daily pull).
@@ -112,6 +119,16 @@ CREATE INDEX IF NOT EXISTS idx_pe_floor_load
 CREATE INDEX IF NOT EXISTS idx_pe_certifications
   ON public.property_extensions USING GIN (certification)
   WHERE certification IS NOT NULL;
+
+-- Sub-type local (granular LogicPro subtype mimo Nemovizor)
+CREATE INDEX IF NOT EXISTS idx_pe_sub_type_local
+  ON public.property_extensions (sub_type_local)
+  WHERE sub_type_local IS NOT NULL;
+
+-- Legacy LogicPro ID (pro 301 redirect ze starych /detail/123 URL)
+CREATE INDEX IF NOT EXISTS idx_pe_legacy_id
+  ON public.property_extensions (legacy_logicpro_id)
+  WHERE legacy_logicpro_id IS NOT NULL;
 
 
 -- ---------------------------------------------------------------------
@@ -179,12 +196,17 @@ CREATE POLICY "pe_write_admin" ON public.property_extensions
 -- Spustit POUZE pokud chces zachovat existujici LogicPro listingy
 -- jako "manual source" v sidecaru, dokud je Nemovizor postupne nahradi.
 -- =====================================================================
+-- POZN: backfill se PRED Nemovizor importem pouziva s placeholder property_id
+-- ('local-<id>'). Po Nemovizor importu (viz scripts/migrate-to-nemovizor.mjs)
+-- se property_id prepise na realne Nemovizor UUID a doplni legacy_logicpro_id.
+--
 -- INSERT INTO public.property_extensions (
---   property_id, source,
+--   property_id, legacy_logicpro_id, source,
 --   building_class, certification, floor_load, loading_docks, dock_type,
 --   drive_in_gates, crane_capacity, column_grid, sprinkler_type,
 --   rail_access, highway_distance, lease_type, ceiling_height,
---   min_divisible_area, office_area,
+--   min_divisible_area, office_area, production_area, shop_area,
+--   store_area, workshop_area, sub_type_local,
 --   mirror_subtype, mirror_advert_function,
 --   mirror_locality_city, mirror_locality_region,
 --   mirror_latitude, mirror_longitude,
@@ -194,6 +216,7 @@ CREATE POLICY "pe_write_admin" ON public.property_extensions
 -- )
 -- SELECT
 --   'local-' || id::TEXT,                            -- placeholder property_id
+--   id,                                              -- legacy_logicpro_id
 --   COALESCE(source, 'manual'),
 --   building_class,
 --   CASE WHEN certification IS NOT NULL
@@ -201,7 +224,17 @@ CREATE POLICY "pe_write_admin" ON public.property_extensions
 --        ELSE NULL END,
 --   floor_load, loading_docks, dock_type, drive_in_gates, crane_capacity,
 --   column_grid, sprinkler_type, rail_access::BOOLEAN,
---   highway_distance, lease_type, ceiling_height, min_divisible_area, office_area,
+--   highway_distance, lease_type, ceiling_height, min_divisible_area,
+--   office_area, production_area, shop_area, store_area, workshop_area,
+--   CASE advert_subtype
+--     WHEN 50 THEN 'logistika'
+--     WHEN 51 THEN 'retail_park'
+--     WHEN 52 THEN 'datacentrum'
+--     WHEN 53 THEN 'coworking'
+--     WHEN 54 THEN 'polyfunkcni'
+--     WHEN 55 THEN 'garaze'
+--     ELSE NULL
+--   END,
 --   advert_subtype, advert_function,
 --   locality_city, locality_region,
 --   locality_latitude, locality_longitude,
